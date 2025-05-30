@@ -40,4 +40,18 @@ form.onsubmit = (event) =>{
     amount: amount.value,
     created_at: new Date(),
   }
+
+  expenseAdd(newExpense)
+}
+
+function expenseAdd(newExpense){
+  try{
+    const expenseItem = document.createElement("li")
+    expenseItem.classList.add("expense")
+
+  } catch (error) {
+    console.log(error)
+  }
+
+  return newExpense
 }
