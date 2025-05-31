@@ -6,6 +6,7 @@ const category = document.getElementById("category");
 
 // Seleciona os elementos da lista
 const expenseList = document.querySelector("ul")
+const expenseQuantity = document.querySelector("aside header p span")
 
 // Captura o evento de input para formatar o valor.
 amount.oninput = () => {
@@ -47,6 +48,7 @@ form.onsubmit = (event) =>{
   expenseAdd(newExpense)
 }
 
+// Adiciona um novo item na Lista.
 function expenseAdd(newExpense){
   try{
     // Cria o elemente para adicionar o item (li) na lista (ul)
@@ -79,16 +81,36 @@ function expenseAdd(newExpense){
     expenseAmount.innerHTML = `<small>R$</small> ${newExpense.amount
                                                              .toUpperCase()
                                                              .replace("R$","")}`
+    
+    // Cria o ícone de remover
+    const removeIcon = document.createElement("img")
+    removeIcon.classList.add("remove-icon")
+    removeIcon.setAttribute("src","img/remove.svg")
+    removeIcon.setAttribute("alt","remover")
 
     // Adiciona as informações no item
-    expenseItem.append(expenseIcon, expenseInfo, expenseAmount)
+    expenseItem.append(expenseIcon, expenseInfo, expenseAmount, removeIcon)
 
     // Adiciona o item na lista
     expenseList.appendChild(expenseItem)
+
+    // Atualiza os totais.
+    updateTotals()
 
   } catch (error) {
     console.log(error)
   }
 
  
+}
+
+// Atualiza os totais.
+function updateTotals(){
+  try {
+    const items = expenseList.children
+    expenseQuantity.textContent = `${items.length} ${items.length > 1 ? "despesas" : "despesa"} `
+
+  } catch (error) {
+    console.log(error.message)
+  }
 }
