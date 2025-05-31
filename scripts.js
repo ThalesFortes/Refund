@@ -6,6 +6,7 @@ const category = document.getElementById("category");
 
 // Seleciona os elementos da lista
 const expenseList = document.querySelector("ul")
+const expensesTotal = document.querySelector("aside header h2")
 const expenseQuantity = document.querySelector("aside header p span")
 
 // Captura o evento de input para formatar o valor.
@@ -94,6 +95,9 @@ function expenseAdd(newExpense){
     // Adiciona o item na lista
     expenseList.appendChild(expenseItem)
 
+    // Limpa o formulário para adicionar um novo item
+    formClear()
+
     // Atualiza os totais.
     updateTotals()
 
@@ -110,7 +114,65 @@ function updateTotals(){
     const items = expenseList.children
     expenseQuantity.textContent = `${items.length} ${items.length > 1 ? "despesas" : "despesa"} `
 
+    // Variável para incrementa o total.
+    let total = 0
+
+    // Percorre cada item (li) da lista (ul)
+    for (let item = 0; item < items.length ; item ++){
+      const itemAmount = items[item].querySelector(".expense-amount")
+      
+      // Remove caracteres não numéricos e substitui a vírgula pelo ponto.
+      let value = itemAmount.textContent.replace(/[^\d,]/g, "").replace(",",".")
+
+      // Convertendo para float
+      value = parseFloat(value)
+
+      // Verifica se é um número
+      if(isNaN(value)){
+        return alert("Não foi possível calcular o tota. O valor não parece ser um número.")
+      }
+
+      // Incrementar o valor
+      total += Number(value)
+    }
+
+    // Crua a span para adicionar o R$ formatado.
+    const symbolBRL = document.createElement("small")
+    symbolBRL.textContent = "R$"
+
+    //Formata o valor e remove o R$ que será exibido pela small com um estilo customizado.
+    total = formatCurrencyBRL(total).toUpperCase().replace("R$","")
+
+    //Limpa o conteúdo do elemento.
+    expensesTotal.innerHTML = ""
+
+    // Adiciona o simbolo da moeda e o valor total formatado.
+    expensesTotal.append(symbolBRL, total)
   } catch (error) {
     console.log(error.message)
   }
+}
+
+// Evento que captura o cique nos itens da lista.
+expenseList.addEventListener("click", function (event) {
+  // Verifica se o item clicado é nosso botão de remover
+  if (event.target.classList.contains("remove-icon")){
+    // Obtém a li pai do elemento clicado. closest é o pai mais proximo
+    const item = event.target.closest(".expense")
+
+    // Remove item da lista
+    item.remove()
+  }
+  updateTotals()
+})
+
+
+function formClear (){
+  // Limpa os inputs
+  expense.value = ""
+  category.value = ""
+  amount.value = ""
+
+  // Coloca foco no input de amount
+  expense.focus()
 }
